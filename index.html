@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Notas Escolares</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            margin-top: 20px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        h1 {
+            color: #1e3c72;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            color: #2a5298;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e9ecef;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            background-color: #f8f9fa;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 5px 5px;
+            color: #495057;
+        }
+        
+        .tab.active {
+            background-color: #1e3c72;
+            color: white;
+        }
+        
+        .tab:hover:not(.active) {
+            background-color: #e9ecef;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .config-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #1e3c72;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: white;
+        }
+        
+        input:focus, select:focus {
+            border-color: #1e3c72;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+        }
+        
+        .semester-section {
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .semester-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .semester-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e3c72;
+        }
+        
+        .bimester-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .bimester-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .bimester-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #495057;
+            font-size: 0.95rem;
+        }
+        
+        .semester-average-container {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px dashed #1e3c72;
+        }
+        
+        .semester-average-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .semester-average-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #1e3c72;
+        }
+        
+        .btn {
+            background-color: #1e3c72;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            background-color: #2a5298;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background-color: #28a745;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #218838;
+        }
+        
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            text-align: center;
+            display: none;
+            border-left: 4px solid #1e3c72;
+        }
+        
+        .result.show {
+            display: block;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .average {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 15px 0;
+            color: #1e3c72;
+        }
+        
+        .status {
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .approved {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .recovery {
+            background-color: #ffc107;
+            color: black;
+        }
+        
+        .failed {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .game-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .game-title {
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+        
+        .game-description {
+            margin-bottom: 20px;
+            color: #495057;
+        }
+        
+        .game-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .game-card {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .game-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .calculation-details {
+            margin-top: 20px;
+            text-align: left;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .calculation-step {
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: white;
+            border-radius: 5px;
+        }
+        
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .info-box {
+            background-color: #e7f3ff;
+            border-left: 4px solid #1e3c72;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .game-content {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: left;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #1e3c72;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background: #f8f9fa;
+            border-color: #1e3c72;
+        }
+        
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .game-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .score {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1e3c72;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .bimester-row {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .result-actions {
+                flex-direction: column;
+            }
+            
+            .game-container {
+                gap: 10px;
+            }
+            
+            .game-card {
+                width: 130px;
+                height: 130px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Calculadora de Notas Escolares</h1>
+            <p class="subtitle">Calcule sua média anual e teste seus conhecimentos</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="calculator">Calcular Média</button>
+            <button class="tab" data-tab="game">Jogos Educativos</button>
+        </div>
+        
+        <div class="tab-content active" id="calculator">
+            <div class="config-section">
+                <h2>Configurações da Escola</h2>
+                <div class="form-group">
+                    <label for="school-average">Média Mínima para Aprovação (0.0 a 7.0)</label>
+                    <input type="number" id="school-average" min="0" max="7" step="0.1" value="6.0" placeholder="Ex: 6.0">
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <p><strong>Instruções:</strong> Selecione a disciplina e as notas de cada bimestre. A média será calculada automaticamente ao clicar em "Calcular Média Anual".</p>
+            </div>
+            
+            <h2>Notas por Disciplina</h2>
+            
+            <div class="form-group">
+                <div id="subjects-container">
+                    <div class="semester-section" data-semester="1">
+                        <div class="semester-header">
+                            <div class="semester-title">📅 1º Semestre</div>
+                        </div>
+                        
+                        <div class="subject-row" data-subject="1">
+                            <div class="form-group">
+                                <label for="subject1">Disciplina</label>
+                                <select id="subject1" class="subject-select">
+                                    <option value="">Selecione uma disciplina</option>
+                                    <option value="Matemática">Matemática</option>
+                                    <option value="Português">Português</option>
+                                    <option value="Inglês">Inglês</option>
+                                    <option value="Espanhol">Espanhol</option>
+                                    <option value="História">História</option>
+                                    <option value="Geografia">Geografia</option>
+                                    <option value="Física">Física</option>
+                                    <option value="Química">Química</option>
+                                    <option value="Biologia">Biologia</option>
+                                    <option value="Filosofia">Filosofia</option>
+                                    <option value="Sociologia">Sociologia</option>
+                                    <option value="Artes">Artes</option>
+                                    <option value="Educação Física">Educação Física</option>
+                                    <option value="Literatura">Literatura</option>
+                                    <option value="Redação">Redação</option>
+                                    <option value="Gramática">Gramática</option>
+                                    <option value="Geografia do Brasil">Geografia do Brasil</option>
+                                    <option value="História do Brasil">História do Brasil</option>
+                                    <option value="Matemática Financeira">Matemática Financeira</option>
+                                </select>
+                            </div>
+                            
+                            <div class="bimester-row">
+                                <div class="bimester-item">
+                                    <span class="bimester-label">1º Bimestre</span>
+                                    <select class="bimester-grade" data-bimester="1">
+                                        <option value="">Selecione</option>
+                                        <option value="0">0.0</option>
+                                        <option value="1">1.0</option>
+                                        <option value="1.5">1.5</option>
+                                        <option value="2">2.0</option>
+                                        <option value="2.5">2.5</option>
+                                        <option value="3">3.0</option>
+                                        <option value="3.5">3.5</option>
+                                        <option value="4">4.0</option>
+                                        <option value="4.5">4.5</option>
+                                        <option value="5">5.0</option>
+                                        <option value="5.5">5.5</option>
+                                        <option value="6">6.0</option>
+                                        <option value="6.5">6.5</option>
+                                        <option value="7">7.0</option>
+                                        <option value="7.5">7.5</option>
+                                        <option value="8">8.0</option>
+                                        <option value="8.5">8.5</option>
+                                        <option value="9">9.0</option>
+                                        <option value="9.5">9.5</option>
+                                        <option value="10">10.0</option>
+                                    </select>
+                                </div>
+                                <div class="bimester-item">
+                                    <span class="bimester-label">2º Bimestre</span>
+                                    <select class="bimester-grade" data-bimester="2">
+                                        <option value="">Selecione</option>
+                                        <option value="0">0.0</option>
+                                        <option value="1">1.0</option>
+                                        <option value="1.5">1.5</option>
+                                        <option value="2">2.0</option>
+                                        <option value="2.5">2.5</option>
+                                        <option value="3">3.0</option>
+                                        <option value="3.5">3.5</option>
+                                        <option value="4">4.0</option>
+                                        <option value="4.5">4.5</option>
+                                        <option value="5">5.0</option>
+                                        <option value="5.5">5.5</option>
+                                        <option value="6">6.0</option>
+                                        <option value="6.5">6.5</option>
+                                        <option value="7">7.0</option>
+                                        <option value="7.5">7.5</option>
+                                        <option value="8">8.0</option>
+                                        <option value="8.5">8.5</option>
+                                        <option value="9">9.0</option>
+                                        <option value="9.5">9.5</option>
+                                        <option value="10">10.0</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="semester-average-container" id="sem1-average-1">
+                                <div class="bimester-label">Média do 1º Semestre</div>
+                                <div class="semester-average-value">0.0</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="semester-section" data-semester="2">
+                        <div class="semester-header">
+                            <div class="semester-title">📅 2º Semestre</div>
+                        </div>
+                        
+                        <div class="subject-row" data-subject="1">
+                            <div class="form-group">
+                                <label for="subject1-sem2">Disciplina</label>
+                                <select id="subject1-sem2" class="subject-select">
+                                    <option value="">Selecione uma disciplina</option>
+                                    <option value="Matemática">Matemática</option>
+                                    <option value="Português">Português</option>
+                                    <option value="Inglês">Inglês</option>
+                                    <option value="Espanhol">Espanhol</option>
+                                    <option value="História">História</option>
+                                    <option value="Geografia">Geografia</option>
+                                    <option value="Física">Física</option>
+                                    <option value="Química">Química</option>
+                                    <option value="Biologia">Biologia</option>
+                                    <option value="Filosofia">Filosofia</option>
+                                    <option value="Sociologia">Sociologia</option>
+                                    <option value="Artes">Artes</option>
+                                    <option value="Educação Física">Educação Física</option>
+                                    <option value="Literatura">Literatura</option>
+                                    <option value="Redação">Redação</option>
+                                    <option value="Gramática">Gramática</option>
+                                    <option value="Geografia do Brasil">Geografia do Brasil</option>
+                                    <option value="História do Brasil">História do Brasil</option>
+                                    <option value="Matemática Financeira">Matemática Financeira</option>
+                                </select>
+                            </div>
+                            
+                            <div class="bimester-row">
+                                <div class="bimester-item">
+                                    <span class="bimester-label">3º Bimestre</span>
+                                    <select class="bimester-grade" data-bimester="3">
+                                        <option value="">Selecione</option>
+                                        <option value="0">0.0</option>
+                                        <option value="1">1.0</option>
+                                        <option value="1.5">1.5</option>
+                                        <option value="2">2.0</option>
+                                        <option value="2.5">2.5</option>
+                                        <option value="3">3.0</option>
+                                        <option value="3.5">3.5</option>
+                                        <option value="4">4.0</option>
+                                        <option value="4.5">4.5</option>
+                                        <option value="5">5.0</option>
+                                        <option value="5.5">5.5</option>
+                                        <option value="6">6.0</option>
+                                        <option value="6.5">6.5</option>
+                                        <option value="7">7.0</option>
+                                        <option value="7.5">7.5</option>
+                                        <option value="8">8.0</option>
+                                        <option value="8.5">8.5</option>
+                                        <option value="9">9.0</option>
+                                        <option value="9.5">9.5</option>
+                                        <option value="10">10.0</option>
+                                    </select>
+                                </div>
+                                <div class="bimester-item">
+                                    <span class="bimester-label">4º Bimestre</span>
+                                    <select class="bimester-grade" data-bimester="4">
+                                        <option value="">Selecione</option>
+                                        <option value="0">0.0</option>
+                                        <option value="1">1.0</option>
+                                        <option value="1.5">1.5</option>
+                                        <option value="2">2.0</option>
+                                        <option value="2.5">2.5</option>
+                                        <option value="3">3.0</option>
+                                        <option value="3.5">3.5</option>
+                                        <option value="4">4.0</option>
+                                        <option value="4.5">4.5</option>
+                                        <option value="5">5.0</option>
+                                        <option value="5.5">5.5</option>
+                                        <option value="6">6.0</option>
+                                        <option value="6.5">6.5</option>
+                                        <option value="7">7.0</option>
+                                        <option value="7.5">7.5</option>
+                                        <option value="8">8.0</option>
+                                        <option value="8.5">8.5</option>
+                                        <option value="9">9.0</option>
+                                        <option value="9.5">9.5</option>
+                                        <option value="10">10.0</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="semester-average-container" id="sem2-average-1">
+                                <div class="bimester-label">Média do 2º Semestre</div>
+                                <div class="semester-average-value">0.0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn" id="calculate">📊 Calcular Média Anual</button>
+                    <button class="btn btn-warning" id="reset-all">🔄 Limpar Tudo</button>
+                </div>
+            </div>
+            
+            <div class="result" id="result">
+                <h3>Resultado Final</h3>
+                <div class="average" id="average-value">0.0</div>
+                <div class="status" id="status">Status</div>
+                <p id="result-message">Adicione suas notas para ver o resultado.</p>
+                
+                <div class="calculation-details" id="calculation-details">
+                    <!-- Detalhes do cálculo serão inseridos aqui -->
+                </div>
+                
+                <div class="result-actions">
+                    <button class="btn btn-warning" id="new-calculation">🔄 Novo Cálculo</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="game">
+            <div class="game-section">
+                <h2 class="game-title">🎮 Jogos Educativos</h2>
+                <p class="game-description">Teste seus conhecimentos e melhore suas notas nestes jogos educativos!</p>
+                
+                <div class="game-container">
+                    <div class="game-card" id="math-game">
+                        <div class="game-icon">∫</div>
+                        <h3>Matemática</h3>
+                    </div>
+                    <div class="game-card" id="science-game">
+                        <div class="game-icon">⚗️</div>
+                        <h3>Ciências</h3>
+                    </div>
+                    <div class="game-card" id="language-game">
+                        <div class="game-icon">📚</div>
+                        <h3>Português</h3>
+                    </div>
+                    <div class="game-card" id="history-game">
+                        <div class="game-icon">🏛️</div>
+                        <h3>História</h3>
+                    </div>
+                    <div class="game-card" id="geography-game">
+                        <div class="game-icon">🌎</div>
+                        <h3>Geografia</h3>
+                    </div>
+                    <div class="game-card" id="english-game">
+                        <div class="game-icon">🔤</div>
+                        <h3>Inglês</h3>
+                    </div>
+                </div>
+                
+                <div id="game-content">
+                    <!-- Conteúdo do jogo será carregado aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Calculadora de Notas Escolares &copy; 2023 - Ferramenta Educacional</p>
+    </footer>
+
+    <script>
+        // Elementos da calculadora
+        const calculateBtn = document.getElementById('calculate');
+        const resetAllBtn = document.getElementById('reset-all');
+        const resultDiv = document.getElementById('result');
+        const averageValue = document.getElementById('average-value');
+        const statusDiv = document.getElementById('status');
+        const resultMessage = document.getElementById('result-message');
+        const calculationDetails = document.getElementById('calculation-details');
+        const schoolAverageInput = document.getElementById('school-average');
+        const newCalculationBtn = document.getElementById('new-calculation');
+        const gameContent = document.getElementById('game-content');
+        
+        // Elementos dos jogos
+        const mathGame = document.getElementById('math-game');
+        const scienceGame = document.getElementById('science-game');
+        const languageGame = document.getElementById('language-game');
+        const historyGame = document.getElementById('history-game');
+        const geographyGame = document.getElementById('geography-game');
+        const englishGame = document.getElementById('english-game');
+        
+        // Perguntas para cada matéria
+        const questions = {
+            math: [
+                {
+                    question: "Qual é o resultado da expressão: 2 + 3 × 4?",
+                    options: ["20", "14", "24", "10"],
+                    correct: 1
+                },
+                {
+                    question: "Se um triângulo tem lados de 3cm, 4cm e 5cm, que tipo de triângulo é?",
+                    options: ["Equilátero", "Isósceles", "Escaleno", "Retângulo"],
+                    correct: 3
+                },
+                {
+                    question: "Qual é a raiz quadrada de 144?",
+                    options: ["11", "12", "13", "14"],
+                    correct: 1
+                },
+                {
+                    question: "Quantos graus tem a soma dos ângulos internos de um triângulo?",
+                    options: ["90°", "180°", "270°", "360°"],
+                    correct: 1
+                },
+                {
+                    question: "Qual é o valor de π (pi) aproximadamente?",
+                    options: ["2.14", "3.14", "4.14", "3.41"],
+                    correct: 1
+                }
+            ],
+            science: [
+                {
+                    question: "Qual é o processo pelo qual as plantas produzem seu próprio alimento?",
+                    options: ["Respiração", "Fotossíntese", "Digestão", "Transpiração"],
+                    correct: 1
+                },
+                {
+                    question: "Qual é o elemento químico mais abundante no universo?",
+                    options: ["Oxigênio", "Carbono", "Hidrogênio", "Hélio"],
+                    correct: 2
+                },
+                {
+                    question: "Qual planeta é conhecido como 'Planeta Vermelho'?",
+                    options: ["Vênus", "Marte", "Júpiter", "Saturno"],
+                    correct: 1
+                },
+                {
+                    question: "Qual é a unidade básica da vida?",
+                    options: ["Átomo", "Molécula", "Célula", "Tecido"],
+                    correct: 2
+                },
+                {
+                    question: "Qual gás é essencial para a respiração dos seres humanos?",
+                    options: ["Hidrogênio", "Oxigênio", "Nitrogênio", "Dióxido de Carbono"],
+                    correct: 1
+                }
+            ],
+            language: [
+                {
+                    question: "Qual é o sujeito na frase: 'O gato persegue o rato'?",
+                    options: ["persegue", "o rato", "O gato", "gato persegue"],
+                    correct: 2
+                },
+                {
+                    question: "Qual destas palavras é um substantivo?",
+                    options: ["correr", "belo", "casa", "rapidamente"],
+                    correct: 2
+                },
+                {
+                    question: "Qual é o plural de 'cidadão'?",
+                    options: ["cidadões", "cidadãos", "cidadães", "cidadões"],
+                    correct: 1
+                },
+                {
+                    question: "Qual destes é um exemplo de metáfora?",
+                    options: ["Ele corre como um leão", "Ela é uma flor", "Choveu muito", "O sol brilhou"],
+                    correct: 1
+                },
+                {
+                    question: "Qual é o antônimo de 'alegre'?",
+                    options: ["contente", "feliz", "triste", "animado"],
+                    correct: 2
+                }
+            ],
+            history: [
+                {
+                    question: "Em que ano o Brasil foi descoberto?",
+                    options: ["1492", "1500", "1520", "1450"],
+                    correct: 1
+                },
+                {
+                    question: "Quem foi o primeiro presidente do Brasil?",
+                    options: ["Getúlio Vargas", "Dom Pedro II", "Deodoro da Fonseca", "Juscelino Kubitschek"],
+                    correct: 2
+                },
+                {
+                    question: "Qual foi o período da Idade Média?",
+                    options: ["Século V ao XV", "Século I ao V", "Século XV ao XVIII", "Século XVIII ao XX"],
+                    correct: 0
+                },
+                {
+                    question: "Onde ocorreu a Primeira Guerra Mundial?",
+                    options: ["Apenas na Europa", "Europa e Ásia", "Europa, África e Ásia", "Em todo o mundo"],
+                    correct: 2
+                },
+                {
+                    question: "Quem pintou a Mona Lisa?",
+                    options: ["Van Gogh", "Picasso", "Leonardo da Vinci", "Michelangelo"],
+                    correct: 2
+                }
+            ],
+            geography: [
+                {
+                    question: "Qual é o maior oceano do mundo?",
+                    options: ["Atlântico", "Índico", "Pacífico", "Ártico"],
+                    correct: 2
+                },
+                {
+                    question: "Qual é a capital do Japão?",
+                    options: ["Pequim", "Seul", "Tóquio", "Bangkok"],
+                    correct: 2
+                },
+                {
+                    question: "Qual destes países não faz fronteira com o Brasil?",
+                    options: ["Argentina", "Chile", "Colômbia", "Peru"],
+                    correct: 1
+                },
+                {
+                    question: "Qual é o rio mais longo do mundo?",
+                    options: ["Amazonas", "Nilo", "Mississippi", "Yangtzé"],
+                    correct: 0
+                },
+                {
+                    question: "Em qual continente está localizado o Egito?",
+                    options: ["África", "Ásia", "Europa", "América"],
+                    correct: 0
+                }
+            ],
+            english: [
+                {
+                    question: "What is the past tense of 'go'?",
+                    options: ["goed", "went", "gone", "going"],
+                    correct: 1
+                },
+                {
+                    question: "Which is the correct plural of 'child'?",
+                    options: ["childs", "children", "childes", "childen"],
+                    correct: 1
+                },
+                {
+                    question: "What does 'book' mean in Portuguese?",
+                    options: ["caderno", "livro", "biblioteca", "leitura"],
+                    correct: 1
+                },
+                {
+                    question: "Which word is a pronoun?",
+                    options: ["run", "beautiful", "they", "quickly"],
+                    correct: 2
+                },
+                {
+                    question: "How do you say 'obrigado' in English?",
+                    options: ["please", "sorry", "thank you", "hello"],
+                    correct: 2
+                }
+            ]
+        };
+        
+        // Variáveis do jogo
+        let currentGame = null;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        
+        // Limpar todas as disciplinas
+        resetAllBtn.addEventListener('click', function() {
+            if (confirm("Tem certeza que deseja limpar todas as disciplinas?")) {
+                document.querySelectorAll('.subject-select').forEach(select => {
+                    select.value = '';
+                });
+                document.querySelectorAll('.bimester-grade').forEach(select => {
+                    select.value = '';
+                });
+                document.querySelectorAll('.semester-average-container').forEach(container => {
+                    container.classList.remove('show');
+                    container.querySelector('.semester-average-value').textContent = '0.0';
+                });
+                resultDiv.classList.remove('show');
+            }
+        });
+        
+        // Novo cálculo (voltar ao início)
+        newCalculationBtn.addEventListener('click', function() {
+            if (confirm("Tem certeza que deseja iniciar um novo cálculo? Todos os dados serão perdidos.")) {
+                document.querySelectorAll('.subject-select').forEach(select => {
+                    select.value = '';
+                });
+                document.querySelectorAll('.bimester-grade').forEach(select => {
+                    select.value = '';
+                });
+                document.querySelectorAll('.semester-average-container').forEach(container => {
+                    container.classList.remove('show');
+                    container.querySelector('.semester-average-value').textContent = '0.0';
+                });
+                
+                // Resetar média da escola para o padrão
+                schoolAverageInput.value = '6.0';
+                
+                resultDiv.classList.remove('show');
+            }
+        });
+        
+        // Calcular média
+        calculateBtn.addEventListener('click', function() {
+            const schoolAverage = parseFloat(schoolAverageInput.value);
+            let annualAverage = 0;
+            let subjectAverages = [];
+            let calculationSteps = "<h4>Detalhes do Cálculo:</h4>";
+            
+            // Coletar dados das disciplinas
+            const firstSemesterSubjects = document.querySelectorAll('[data-semester="1"] .subject-row');
+            const secondSemesterSubjects = document.querySelectorAll('[data-semester="2"] .subject-row');
+            
+            // Verificar se temos o mesmo número de disciplinas em ambos os semestres
+            if (firstSemesterSubjects.length !== secondSemesterSubjects.length) {
+                alert("Erro: O número de disciplinas deve ser o mesmo em ambos os semestres.");
+                return;
+            }
+            
+            // Verificar se há pelo menos uma disciplina com nome
+            let hasValidSubject = false;
+            firstSemesterSubjects.forEach(subject => {
+                if (subject.querySelector('.subject-select').value.trim() !== '') {
+                    hasValidSubject = true;
+                }
+            });
+            
+            if (!hasValidSubject) {
+                alert("Por favor, selecione pelo menos uma disciplina.");
+                return;
+            }
+            
+            // Calcular médias por disciplina
+            for (let i = 0; i < firstSemesterSubjects.length; i++) {
+                const subjectName1 = firstSemesterSubjects[i].querySelector('.subject-select').value;
+                const subjectName2 = secondSemesterSubjects[i].querySelector('.subject-select').value;
+                
+                // Pular disciplinas sem nome
+                if (subjectName1.trim() === '' || subjectName2.trim() === '') {
+                    continue;
+                }
+                
+                // Verificar se os nomes das disciplinas coincidem
+                if (subjectName1 !== subjectName2) {
+                    alert(`Erro: A disciplina "${subjectName1}" do 1º semestre não corresponde a "${subjectName2}" do 2º semestre.`);
+                    return;
+                }
+                
+                // Calcular média do 1º semestre
+                const bimester1 = parseFloat(firstSemesterSubjects[i].querySelector('[data-bimester="1"]').value) || 0;
+                const bimester2 = parseFloat(firstSemesterSubjects[i].querySelector('[data-bimester="2"]').value) || 0;
+                const sem1Average = (bimester1 + bimester2) / 2;
+                
+                // Mostrar média do 1º semestre
+                const sem1AverageContainer = document.getElementById(`sem1-average-${i+1}`);
+                sem1AverageContainer.querySelector('.semester-average-value').textContent = sem1Average.toFixed(1);
+                sem1AverageContainer.classList.add('show');
+                
+                // Calcular média do 2º semestre
+                const bimester3 = parseFloat(secondSemesterSubjects[i].querySelector('[data-bimester="3"]').value) || 0;
+                const bimester4 = parseFloat(secondSemesterSubjects[i].querySelector('[data-bimester="4"]').value) || 0;
+                const sem2Average = (bimester3 + bimester4) / 2;
+                
+                // Mostrar média do 2º semestre
+                const sem2AverageContainer = document.getElementById(`sem2-average-${i+1}`);
+                sem2AverageContainer.querySelector('.semester-average-value').textContent = sem2Average.toFixed(1);
+                sem2AverageContainer.classList.add('show');
+                
+                // Calcular média anual da disciplina
+                const subjectAnnualAverage = (sem1Average + sem2Average) / 2;
+                subjectAverages.push({
+                    name: subjectName1,
+                    annualAverage: subjectAnnualAverage
+                });
+                
+                annualAverage += subjectAnnualAverage;
+                
+                // Adicionar detalhes do cálculo
+                calculationSteps += `
+                    <div class="calculation-step">
+                        <strong>${subjectName1}:</strong><br>
+                        1º Sem: (${bimester1} + ${bimester2}) / 2 = ${sem1Average.toFixed(1)}<br>
+                        2º Sem: (${bimester3} + ${bimester4}) / 2 = ${sem2Average.toFixed(1)}<br>
+                        Média Anual: (${sem1Average.toFixed(1)} + ${sem2Average.toFixed(1)}) / 2 = ${subjectAnnualAverage.toFixed(1)}
+                    </div>
+                `;
+            }
+            
+            if (subjectAverages.length > 0) {
+                annualAverage = annualAverage / subjectAverages.length;
+                averageValue.textContent = annualAverage.toFixed(2);
+                
+                // Determinar status
+                if (annualAverage >= schoolAverage) {
+                    statusDiv.className = 'status approved';
+                    statusDiv.textContent = 'Aprovado!';
+                    resultMessage.textContent = `Parabéns! Sua média (${annualAverage.toFixed(1)}) está acima da média da escola (${schoolAverage}).`;
+                } else {
+                    statusDiv.className = 'status failed';
+                    statusDiv.textContent = 'Reprovado';
+                    resultMessage.textContent = `Estude mais! Sua média (${annualAverage.toFixed(1)}) está abaixo da média da escola (${schoolAverage}).`;
+                }
+                
+                // Adicionar resumo final
+                calculationSteps += `
+                    <div class="calculation-step">
+                        <strong>Média Geral Anual:</strong> ${annualAverage.toFixed(2)}<br>
+                        <strong>Média da Escola:</strong> ${schoolAverage}<br>
+                        <strong>Status:</strong> ${annualAverage >= schoolAverage ? 'Aprovado' : 'Reprovado'}
+                    </div>
+                `;
+                
+                calculationDetails.innerHTML = calculationSteps;
+                resultDiv.classList.add('show');
+                
+                // Rolar a página para o resultado
+                resultDiv.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert('Por favor, selecione as notas para pelo menos uma disciplina.');
+            }
+        });
+        
+        // Sistema de abas
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // Remover classe active de todas as abas e conteúdos
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(tc => tc.classList.remove('active'));
+                
+                // Adicionar classe active à aba e conteúdo selecionados
+                tab.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Função para iniciar um jogo
+        function startGame(gameType) {
+            currentGame = gameType;
+            currentQuestionIndex = 0;
+            score = 0;
+            showQuestion();
+        }
+        
+        // Função para mostrar uma pergunta
+        function showQuestion() {
+            const gameQuestions = questions[currentGame];
+            if (currentQuestionIndex >= gameQuestions.length) {
+                showGameResult();
+                return;
+            }
+            
+            const question = gameQuestions[currentQuestionIndex];
+            
+            gameContent.innerHTML = `
+                <div class="game-content">
+                    <h3>Quiz de ${getGameName(currentGame)}</h3>
+                    <div class="score">Pontuação: ${score}/${currentQuestionIndex}</div>
+                    <div class="question">${question.question}</div>
+                    <div class="options">
+                        ${question.options.map((option, index) => `
+                            <div class="option" data-index="${index}">${option}</div>
+                        `).join('')}
+                    </div>
+                    <div class="game-result" id="question-result"></div>
+                </div>
+            `;
+            
+            // Adicionar eventos às opções
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    checkAnswer(parseInt(this.getAttribute('data-index')));
+                });
+            });
+        }
+        
+        // Função para verificar a resposta
+        function checkAnswer(selectedIndex) {
+            const question = questions[currentGame][currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            const resultDiv = document.getElementById('question-result');
+            
+            // Desabilitar todas as opções
+            options.forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+            
+            // Mostrar resultado
+            if (selectedIndex === question.correct) {
+                options[selectedIndex].classList.add('correct');
+                resultDiv.innerHTML = '<p style="color: #28a745;">✅ Resposta Correta!</p>';
+                score++;
+            } else {
+                options[selectedIndex].classList.add('incorrect');
+                options[question.correct].classList.add('correct');
+                resultDiv.innerHTML = '<p style="color: #dc3545;">❌ Resposta Incorreta!</p>';
+            }
+            
+            // Próxima pergunta após 2 segundos
+            setTimeout(() => {
+                currentQuestionIndex++;
+                showQuestion();
+            }, 2000);
+        }
+        
+        // Função para mostrar o resultado final do jogo
+        function showGameResult() {
+            const totalQuestions = questions[currentGame].length;
+            const percentage = (score / totalQuestions) * 100;
+            
+            let message = '';
+            if (percentage >= 80) {
+                message = '🎉 Excelente! Você é um expert nesta matéria!';
+            } else if (percentage >= 60) {
+                message = '👍 Bom trabalho! Continue estudando!';
+            } else if (percentage >= 40) {
+                message = '😊 Você foi bem, mas pode melhorar!';
+            } else {
+                message = '📚 Estude um pouco mais e tente novamente!';
+            }
+            
+            gameContent.innerHTML = `
+                <div class="game-content">
+                    <h3>Quiz de ${getGameName(currentGame)} - Resultado Final</h3>
+                    <div class="score">Sua pontuação: ${score}/${totalQuestions}</div>
+                    <div class="game-result">
+                        <p>${message}</p>
+                        <p>Porcentagem de acertos: ${percentage.toFixed(1)}%</p>
+                    </div>
+                    <button class="btn" id="restart-game" style="margin-top: 20px;">Jogar Novamente</button>
+                    <button class="btn btn-warning" id="back-to-games" style="margin-top: 10px;">Voltar aos Jogos</button>
+                </div>
+            `;
+            
+            document.getElementById('restart-game').addEventListener('click', () => {
+                startGame(currentGame);
+            });
+            
+            document.getElementById('back-to-games').addEventListener('click', () => {
+                showGameSelection();
+            });
+        }
+        
+        // Função para mostrar a seleção de jogos
+        function showGameSelection() {
+            gameContent.innerHTML = `
+                <div class="game-content">
+                    <h3>Selecione um Jogo Educativo</h3>
+                    <p>Escolha uma matéria para testar seus conhecimentos!</p>
+                </div>
+            `;
+        }
+        
+        // Função para obter o nome do jogo
+        function getGameName(gameType) {
+            const names = {
+                math: 'Matemática',
+                science: 'Ciências',
+                language: 'Português',
+                history: 'História',
+                geography: 'Geografia',
+                english: 'Inglês'
+            };
+            return names[gameType];
+        }
+        
+        // Eventos dos jogos
+        mathGame.addEventListener('click', () => startGame('math'));
+        scienceGame.addEventListener('click', () => startGame('science'));
+        languageGame.addEventListener('click', () => startGame('language'));
+        historyGame.addEventListener('click', () => startGame('history'));
+        geographyGame.addEventListener('click', () => startGame('geography'));
+        englishGame.addEventListener('click', () => startGame('english'));
+        
+        // Inicializar a página
+        showGameSelection();
+    </script>
+</body>
+</html>
